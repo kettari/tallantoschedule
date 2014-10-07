@@ -1,0 +1,49 @@
+<?php
+
+require_once(dirname(__FILE__) . '/settings.php.inc');
+require_once(dirname(__FILE__) . '/processor.php.inc');
+require_once(dirname(__FILE__) . '/class_tlevent.php.inc');
+
+/**
+ * Valid permissions for this module
+ * @return array An array of valid permissions for the tallantoschedule module
+ */
+function tallantoschedule_perm() {
+    return array('administer tallantoschedule', 'access tallantoschedule content');
+} // function tallantoschedule_perm()
+
+/**
+ * Menu for this module
+ * @return array An array with this module's settings.
+ */
+function tallantoschedule_menu() {
+    $items = array();
+    //Link to the tallantoschedule admin page:
+    $items['admin/settings/tallantoschedule'] = array(
+        'title' => 'Tallanto Schedule',
+        'description' => 'Administer Tallanto Schedule Module',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('tallantoschedule_settings'),
+        'access arguments' => array('administer tallantoschedule'),
+        'type' => MENU_NORMAL_ITEM,
+        );
+    $items['admin/settings/tallantoschedule/settings'] = array(
+        'title' => 'General',
+        'description' => 'Administer Tallanto Schedule Module',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('tallantoschedule_settings'),
+        'access arguments' => array('administer tallantoschedule'),
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        );
+    // 
+    $items['admin/settings/tallantoschedule/branches'] = array(
+        'title' => 'Branches',
+        'description' => 'Set up branches',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('tallantoschedule_settings_branches'),
+        'access arguments' => array('administer tallantoschedule'),
+        'type' => MENU_LOCAL_TASK,
+        );
+        
+    return $items;
+}
