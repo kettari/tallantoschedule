@@ -41,6 +41,7 @@ function listTallantoScheduleBlocks() {
         }
         
         $blocks[]['info'] = sprintf('%s: %s', t('Tallanto Schedule'), variable_get('tallantoschedule_branch_title_' . $safe_branch, $branch));
+        $blocks[]['cache'] = BLOCK_NO_CACHE;
         
         // Save block index to prevent mixup
         variable_set('tallantoschedule_branch_block_' . (count($blocks) - 1), $branch);
