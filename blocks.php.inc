@@ -29,24 +29,26 @@ function tallantoschedule_block($op = 'list', $delta = 0, $edit = array()) {
 // Get an array of blocks using user selected branches
 function listTallantoScheduleBlocks() {
     $blocks = array();
-    
+
     // Get branches
     $tallantoschedule_parsed_data = variable_get('tallantoschedule_parsed_data', array());
-    
+
     foreach ($tallantoschedule_parsed_data['valid_branches'] as $branch => $placeholder) {
         // Is branch selected?
         $safe_branch = preg_replace("/[^a-zA-Z0-9]+/", "", $branch);
         if (!variable_get('tallantoschedule_branch_check_' . $safe_branch, 0)) {
             continue;
         }
-        
-        $blocks[]['info'] = sprintf('%s: %s', t('Tallanto Schedule'), variable_get('tallantoschedule_branch_title_' . $safe_branch, $branch));
-        $blocks[]['cache'] = BLOCK_NO_CACHE;
-        
+
+        $the_block = array();
+        $the_block['info'] = sprintf('%s: %s', t('Tallanto Schedule'), variable_get('tallantoschedule_branch_title_' . $safe_branch, $branch));
+        $the_block['cache'] = BLOCK_NO_CACHE;
+        $blocks[] = $the_block;
+
         // Save block index to prevent mixup
         variable_set('tallantoschedule_branch_block_' . (count($blocks) - 1), $branch);
     }
-    
+
     return $blocks;
 }
 
