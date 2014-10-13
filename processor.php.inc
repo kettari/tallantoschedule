@@ -29,7 +29,7 @@ function tallantoschedule_load_xml_source() {
     $time_end = _tallantoschedule_microtime_float();
     $load_time = $time_end - $time_start;
     
-    drupal_set_message(sprintf('XML loaded, time elapsed: %.1f seconds; XML raw size: %.1f MB', $load_time, (strlen($xml_data) / 1024 / 1024)));
+    //drupal_set_message(sprintf('XML loaded, time elapsed: %.1f seconds; XML raw size: %.1f MB', $load_time, (strlen($xml_data) / 1024 / 1024)));
     
     return $xml_data;
 }
@@ -159,8 +159,8 @@ function tallantoschedule_parse_xml_data($xml_data) {
     $time_end = _tallantoschedule_microtime_float();
     $parse_time = $time_end - $time_start;
     
-    drupal_set_message(sprintf('XML parsed, time elapsed: %.1f seconds; event objects: %d; subjects: %d; employees: %d', 
-        $parse_time, count($valid_events), count($valid_subjects), count($valid_employees)));
+    //drupal_set_message(sprintf('XML parsed, time elapsed: %.1f seconds; event objects: %d; subjects: %d; employees: %d', 
+    //    $parse_time, count($valid_events), count($valid_subjects), count($valid_employees)));
     
     variable_set('tallantoschedule_parsed_data', $tallantoschedule_parsed_data);
 }
