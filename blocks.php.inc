@@ -126,7 +126,7 @@ function viewTallantoScheduleBlock($delta = 0) {
                 );
             }
             
-            $content .= sprintf('<h2>%s</h2>', $valid_dates[$i++]) . theme_table($header, $data);
+            $content .= sprintf('<h2>%s</h2>', $valid_dates[$i++]) . theme_table($header, $data, array('width="647px"'));
             
             // Cleanup data
             $data = array();
