@@ -3,6 +3,8 @@
 require_once(dirname(__FILE__) . '/settings.php.inc');
 require_once(dirname(__FILE__) . '/processor.php.inc');
 require_once(dirname(__FILE__) . '/class_tlevent.php.inc');
+require_once(dirname(__FILE__) . '/formatter.php.inc');
+require_once(dirname(__FILE__) . '/blocks.php.inc');
 
 /**
  * Valid permissions for this module
@@ -26,7 +28,7 @@ function tallantoschedule_menu() {
         'page arguments' => array('tallantoschedule_settings'),
         'access arguments' => array('administer tallantoschedule'),
         'type' => MENU_NORMAL_ITEM,
-        );
+    );
     $items['admin/settings/tallantoschedule/settings'] = array(
         'title' => 'General',
         'description' => 'Administer Tallanto Schedule Module',
@@ -34,8 +36,8 @@ function tallantoschedule_menu() {
         'page arguments' => array('tallantoschedule_settings'),
         'access arguments' => array('administer tallantoschedule'),
         'type' => MENU_DEFAULT_LOCAL_TASK,
-        );
-    // 
+    );
+    // Branches settings
     $items['admin/settings/tallantoschedule/branches'] = array(
         'title' => 'Branches',
         'description' => 'Set up branches',
@@ -43,7 +45,34 @@ function tallantoschedule_menu() {
         'page arguments' => array('tallantoschedule_settings_branches'),
         'access arguments' => array('administer tallantoschedule'),
         'type' => MENU_LOCAL_TASK,
-        );
+    );
+    // Subjects settings
+    $items['admin/settings/tallantoschedule/subjects'] = array(
+        'title' => 'Subjects',
+        'description' => 'Set up subjects',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('tallantoschedule_settings_subjects'),
+        'access arguments' => array('administer tallantoschedule'),
+        'type' => MENU_LOCAL_TASK,
+    );
+    // Teachers settings
+    $items['admin/settings/tallantoschedule/teachers'] = array(
+        'title' => 'Teachers',
+        'description' => 'Set up teachers',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('tallantoschedule_settings_teachers'),
+        'access arguments' => array('administer tallantoschedule'),
+        'type' => MENU_LOCAL_TASK,
+    );
+    // Difficulty settings
+    $items['admin/settings/tallantoschedule/difficuty'] = array(
+        'title' => 'Difficulty',
+        'description' => 'Set up difficulty',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('tallantoschedule_settings_difficulty'),
+        'access arguments' => array('administer tallantoschedule'),
+        'type' => MENU_LOCAL_TASK,
+    );
         
     return $items;
 }
