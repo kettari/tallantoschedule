@@ -13,6 +13,8 @@ class TallantoEvent {
     public $parent_event_id = '';
     public $branch = '';
     public $timestamp = 0;
+    public $employees_names = '';
+    public $standalone = FALSE; // Standalone -- event without parent ID
     
     function __construct($id, $start_date, $start_time, $end_date, $end_time, $subject_id, $employees_ids, $parent_event_id, $branch) {
         $this->id = $id;
@@ -32,6 +34,11 @@ class TallantoEvent {
                 substr($this->start_date, 8, 2), 
                 substr($this->start_date, 0, 4)
              );
+    }
+    
+    // Resolve employees_ids to name
+    function resolve_employees_names($valid_employees) {
+        $this->employees_names = $valid_employees[$this->employees_ids];
     }
 }
 

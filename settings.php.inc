@@ -375,12 +375,17 @@ function tallantoschedule_settings_difficulty() {
     // Get parent events
     $tallantoschedule_parsed_data = variable_get('tallantoschedule_parsed_data', array());
     
-    //print_r($tallantoschedule_parsed_data['parent_events']);
+    //print_r($tallantoschedule_parsed_data['parent_events']);die;
+    /*
+    echo "valid events: ";print_r(_tallantoschedule_analyze_event_array($tallantoschedule_parsed_data['valid_events']));
+    echo "parent events: ";print_r(_tallantoschedule_analyze_event_array($tallantoschedule_parsed_data['parent_events']));
+    die;
+    */
     
     if (isset($tallantoschedule_parsed_data['parent_events']) && (count($tallantoschedule_parsed_data['parent_events']) > 0)) {
     
         $form['help'] = array(
-            '#value' => t('Please specify difficulty levels for events.'),
+            '#value' => t('Please specify difficulty levels for events. Events marked with asterisk "*" are created as standalone (not as series).'),
         );
         
         // Pre-sort 
@@ -453,7 +458,7 @@ function tallantoschedule_settings_difficulty() {
                 );
                 $form['tallantoschedule_parent_event_title_' . $parent_event->id] = array(
                     '#type' => 'textfield',
-                    '#value' => $tallantoschedule_parsed_data['valid_subjects'][$parent_event->subject_id],
+                    '#value' => implode('', array($tallantoschedule_parsed_data['valid_subjects'][$parent_event->subject_id], ($parent_event->standalone) ? '*' : '')),
                     '#size' => 45, 
                     '#disabled' => TRUE,
                     '#prefix' => '<td>',
@@ -496,9 +501,31 @@ function tallantoschedule_settings_difficulty() {
                 '#suffix' => '<br>',
             );
         }
+        
+        // Add submit handler
+        $form['#submit'][] = 'tallantoschedule_settings_difficulty_submit';
+        
     } else {
         drupal_set_message(t('No parent events loaded.'));
     }
     
     return system_settings_form($form);
+}
+
+// Handle difficulty submit
+function tallantoschedule_settings_difficulty_submit($form, &$form_state) {
+   
+    // Get parent events
+    $tallantoschedule_parsed_data = variable_get('tallantoschedule_parsed_data', array());
+    
+    foreach ($tallantoschedule_parsed_data['valid_events'] as $valid_event) {
+        // fix object
+        $valid_event = fixObject($valid_event);
+
+        // Clean variables...
+        variable_del('tallantoschedule_parent_event_date_' . $valid_event->id);
+        variable_del('tallantoschedule_parent_event_title_' . $valid_event->id);
+        variable_del('tallantoschedule_parent_event_teacher_' . $valid_event->id);
+        variable_del('tallantoschedule_parent_event_level_' . $valid_event->id);
+    }
 }

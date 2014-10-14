@@ -118,7 +118,7 @@ function tallantoschedule_parse_xml_data($xml_data) {
     preg_match_all($pattern, $xml_data, $matches);
 
     $valid_employees = array();
-
+    
     if (isset($matches[1][0])) {
         // Extract subjects
         $pattern = "@<item value='(.+)' label='(.+)'></item>@i";
@@ -137,48 +137,89 @@ function tallantoschedule_parse_xml_data($xml_data) {
     //
     $valid_branches = array();
     $valid_parent_events = array();
+    $standalone_events = array();
+    // Collect events with parent ID
     foreach ($valid_events as $tallanto_event) {
         $valid_branches[$tallanto_event->branch] = TRUE;
-        if (strlen($tallanto_event->parent_event_id) > 0) {
-            $valid_parent_events[$tallanto_event->parent_event_id] = TRUE;
+        if (strlen($tallanto_event->parent_event_id) > 0) { // Event has parent
+            $valid_parent_events[$tallanto_event->parent_event_id] = TRUE; // Mark to resolve it later
         }
     }
-
+    // Collect standalone events
+    foreach ($valid_events as $tallanto_event) {
+        if ((strlen($tallanto_event->parent_event_id) == 0) // Event has no parent
+                && !isset($valid_parent_events[$tallanto_event->id])) { // and is not listed as parent for some other event
+            $valid_parent_events[$tallanto_event->id] = TRUE; // Mark to resolve it later
+            $valid_events[$tallanto_event->id]->standalone = TRUE;
+            $standalone_events[$tallanto_event->id] = TRUE;
+        }
+    }/*
+    // Fill parent events array with objects
+    foreach ($valid_parent_events as $parent_event_id => $placeholder) {
+        if (isset($valid_events[$parent_event_id])) {
+            $valid_parent_events[$parent_event_id] = $valid_events[$parent_event_id];
+            
+            // Check if it's a standalone event
+            if (isset($standalone_events[$parent_event_id])) {
+                $valid_parent_events[$parent_event_id]->standalone = TRUE;
+            }
+        }
+    }*/
+    
     //
-    // 5) Collect parent events
+    // 5) ...
     //
-    $separate_parent_events = array();
     for ($i=0;$i<count($events_matches[0])-1;$i++) {
         // If event id exists in the parents array pick it
         if (isset($valid_parent_events[$events_matches[1][$i]])) {
-            // Check if this parent event is used for current schedule
-            foreach ($valid_events as $val_event) {
-                if ($val_event->parent_event_id == $events_matches[1][$i]) {
-                
-                    $tallanto_event = new TallantoEvent(
-                        $events_matches[1][$i], // event id
-                        $events_matches[2][$i], // start_date
-                        $events_matches[3][$i], // start_time
-                        $events_matches[4][$i], // end_date
-                        $events_matches[5][$i], // end_time
-                        $events_matches[6][$i], // subject_id
-                        $events_matches[7][$i], // employees_ids
-                        $events_matches[8][$i], // parent event id
-                        $events_matches[9][$i]  // branch
-                    );
-                    $separate_parent_events[$events_matches[1][$i]] = $tallanto_event;
-                }
+       
+            $tallanto_event = new TallantoEvent(
+                $events_matches[1][$i], // event id
+                $events_matches[2][$i], // start_date
+                $events_matches[3][$i], // start_time
+                $events_matches[4][$i], // end_date
+                $events_matches[5][$i], // end_time
+                $events_matches[6][$i], // subject_id
+                $events_matches[7][$i], // employees_ids
+                $events_matches[8][$i], // parent event id
+                $events_matches[9][$i]  // branch
+            );
+            
+            // Check if it's a standalone event
+            if (isset($standalone_events[$events_matches[1][$i]])) {
+                $tallanto_event->standalone = TRUE;
             }
+            
+            $valid_parent_events[$events_matches[1][$i]] = $tallanto_event;
         }
     }
+    
+    
+    //
+    // 6) Resolve employee names
+    //
+    foreach ($valid_events as $event_id => $event_item) {
+        $valid_events[$event_id]->resolve_employees_names($valid_employees);
+    }
+    foreach ($valid_parent_events as $event_id => $event_item) {
+        if (is_object($valid_parent_events[$event_id])) {
+            $valid_parent_events[$event_id]->resolve_employees_names($valid_employees);
+        } else {
+            unset($valid_parent_events[$event_id]); // not an object...
+        }
+    }
+    
+    // Sort parent events
+    uasort($valid_parent_events, '_tallantoschedule_sort_parents');
+    //print_r($valid_parent_events);die;
+    //print_r(_tallantoschedule_analyze_event_array($valid_events));die;
 
     // Pack all data
     $tallantoschedule_parsed_data['valid_events'] = $valid_events;
     $tallantoschedule_parsed_data['valid_subjects'] = $valid_subjects;
     $tallantoschedule_parsed_data['valid_employees'] = $valid_employees;
     $tallantoschedule_parsed_data['valid_branches'] = $valid_branches;
-    $tallantoschedule_parsed_data['parent_event_ids'] = $valid_parent_events;
-    $tallantoschedule_parsed_data['parent_events'] = $separate_parent_events;
+    $tallantoschedule_parsed_data['parent_events'] = $valid_parent_events;
 
     //print_r($tallantoschedule_parsed_data);
     //print_r($valid_subjects);
@@ -193,6 +234,24 @@ function tallantoschedule_parse_xml_data($xml_data) {
     //    $parse_time, count($valid_events), count($valid_subjects), count($valid_employees)));
 
     variable_set('tallantoschedule_parsed_data', $tallantoschedule_parsed_data);
+}
+
+// Sort parents
+function _tallantoschedule_sort_parents($a, $b) {
+    // Compare employees
+    $names_comparison = strcmp($a->employees_names, $b->employees_names);
+    if (0 == $names_comparison) {
+        // Compare times
+        if ($a->timestamp < $b->timestamp) {
+            return -1;
+        } elseif ($a->timestamp > $b->timestamp) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+        return $names_comparison;
+    }
 }
 
 // Used to measure time of execution
@@ -220,4 +279,29 @@ function listValidEvents() {
     }
 
     return $valid_events;
+}
+
+// Analyze event array
+function _tallantoschedule_analyze_event_array(&$event_array) {
+    $total = count($event_array);
+    $with_parents = 0;
+    $without_parents = 0;
+    $standalone = 0;
+    foreach ($event_array as $event_id => $event_item) {
+        if (strlen($event_item->parent_event_id) == 0) {
+            $without_parents++;
+        } else {
+            $with_parents++;
+        }
+        if ($event_item->standalone) {
+            $standalone++;
+        }
+    }
+    
+    return array(
+            'total' => $total,
+            'with_parents' => $with_parents,
+            'without_parents' => $without_parents,
+            'standalone' => $standalone,
+        );
 }
