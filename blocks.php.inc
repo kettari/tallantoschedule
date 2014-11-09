@@ -89,13 +89,14 @@ function viewTallantoScheduleBlock($delta = 0) {
                 // Prepare subject
                 $subject = '';
                 $subject_url = variable_get('tallantoschedule_subject_url_' . $event_item->subject_id, '');
+                $subject_title = variable_get('tallantoschedule_subject_visibletitle_' . $event_item->subject_id, $tallantoschedule_parsed_data['valid_subjects'][$event_item->subject_id]);
                 if ($subject_url != '') {
                     if ((substr($subject_url, 0, 5) != 'http:') && (substr($subject_url, 0, 6) != 'https:')) {
                         $subject_url = 'http://' . $subject_url;
                     }
-                    $subject = sprintf('<a href="%s">%s</a>', $subject_url, $tallantoschedule_parsed_data['valid_subjects'][$event_item->subject_id]);
+                    $subject = sprintf('<a href="%s">%s</a>', $subject_url, $subject_title);
                 } else {
-                    $subject = $tallantoschedule_parsed_data['valid_subjects'][$event_item->subject_id];
+                    $subject = $subject_title;
                 }
                 
                 // Prepare teacher
@@ -117,12 +118,15 @@ function viewTallantoScheduleBlock($delta = 0) {
                     $level = variable_get('tallantoschedule_parent_event_level_'. $event_item->id, 0);
                 }
                 
+                // Prepare CSS class name
+                $css_class = _tallantoschedule_translit_css_class($tallantoschedule_parsed_data['valid_subjects'][$event_item->subject_id]);
+                
                 $data[] = array(
-                    array('data' => formatEventDate($event_item), 'style' => 'font-size: 0.875em;'),
-                    array('data' => $subject, 'style' => 'font-size: 0.875em;'),
-                    array('data' => $teacher, 'style' => 'font-size: 0.875em;'),
-                    array('data' => $difficulty_levels[$level], 'style' => 'font-size: 0.875em;'),
-                    array('data' => formatSignUpUrl($event_item), 'style' => 'font-size: 0.875em;'),
+                    array('data' => formatEventDate($event_item), 'style' => 'font-size: 0.875em;', 'class' => $css_class),
+                    array('data' => $subject, 'style' => 'font-size: 0.875em;', 'class' => $css_class),
+                    array('data' => $teacher, 'style' => 'font-size: 0.875em;', 'class' => $css_class),
+                    array('data' => $difficulty_levels[$level], 'style' => 'font-size: 0.875em;', 'class' => $css_class),
+                    array('data' => formatSignUpUrl($event_item), 'style' => 'font-size: 0.875em;', 'class' => $css_class),
                 );
             }
             

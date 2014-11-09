@@ -110,6 +110,18 @@ function listTallantoSchedule($branch) {
 
 // Format sign up URL
 function formatSignUpUrl($tallanto_event) {
+
+    // Text strings for the 'sign up'
+    $signup_text_not_opened = t('Not opened yet');
+    $signup_text_closed = t('Closed');
+    $signup_text_signup = t('Sign up');
+
+    // If we want to customize...
+    $use_custom_signup_text = variable_get('tallantoschedule_subject_custom_text_check_' . $tallanto_event->subject_id, 0);
+    if ($use_custom_signup_text) {
+        $signup_text_not_opened = $signup_text_signup = variable_get('tallantoschedule_signup_custom_text', t('Please call')); // Yes we skip 'closed' because closed means always closed
+    }
+    
     $tallantoschedule_signup_min = variable_get('tallantoschedule_signup_min', 30) * 60;
     $tallantoschedule_signup_max = variable_get('tallantoschedule_signup_max', 4320) * 60;
     $far_cutoff_timestamp = time() + $tallantoschedule_signup_max;
@@ -118,11 +130,59 @@ function formatSignUpUrl($tallanto_event) {
             date('m', $far_cutoff_timestamp), date('d', $far_cutoff_timestamp), date('Y', $far_cutoff_timestamp));
     }
     if ($tallanto_event->timestamp > $far_cutoff_timestamp) {                           // Too far in the future
-        return t('Not opened yet');
+        return $signup_text_not_opened;
     } elseif ($tallanto_event->timestamp < (time() + $tallantoschedule_signup_min)) {   // Too late already
-        return t('Closed');
+        return $signup_text_closed;
     } else {                                                                            // ...and here we go
         $url = str_replace('@EVENT_ID@', $tallanto_event->id, variable_get('tallantoschedule_signup_url', '@EVENT_ID@'));
-        return sprintf('<a href="%s">%s</a>', $url, t('Sign up'));
+        $result = sprintf('<a href="%s">%s</a>', $url, $signup_text_signup);
+        
+        // Custom sign up text? Avoid URLs
+        if ($use_custom_signup_text) {
+            $result = $signup_text_signup;
+        }
+        
+        return $result;
     }
+}
+
+// Transliterator (for CSS classes for example)
+function _tallantoschedule_rus2translit($string) {
+    $converter = array(
+        'а' => 'a',   'б' => 'b',   'в' => 'v',
+        'г' => 'g',   'д' => 'd',   'е' => 'e',
+        'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
+        'и' => 'i',   'й' => 'y',   'к' => 'k',
+        'л' => 'l',   'м' => 'm',   'н' => 'n',
+        'о' => 'o',   'п' => 'p',   'р' => 'r',
+        'с' => 's',   'т' => 't',   'у' => 'u',
+        'ф' => 'f',   'х' => 'h',   'ц' => 'c',
+        'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
+        'ь' => '',    'ы' => 'y',   'ъ' => '',
+        'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
+        
+        'А' => 'A',   'Б' => 'B',   'В' => 'V',
+        'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
+        'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
+        'И' => 'I',   'Й' => 'Y',   'К' => 'K',
+        'Л' => 'L',   'М' => 'M',   'Н' => 'N',
+        'О' => 'O',   'П' => 'P',   'Р' => 'R',
+        'С' => 'S',   'Т' => 'T',   'У' => 'U',
+        'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
+        'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
+        'Ь' => '',    'Ы' => 'Y',   'Ъ' => '',
+        'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
+    );
+    return strtr($string, $converter);
+}
+
+// Transliterate CSS class
+function _tallantoschedule_translit_css_class($string) {
+    $result = strtolower(_tallantoschedule_rus2translit($string));
+    
+    $converter = array(
+        ' ' => '-',
+    );
+    
+    return strtr($result, $converter);
 }

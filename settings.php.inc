@@ -120,6 +120,15 @@ Intensive')),
         '#description' => t("Difficulty levels to be used for events."),
         '#required' => TRUE,
     );
+    $form['other_settings']['tallantoschedule_signup_custom_text'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Sign up custom text'),
+        '#default_value' => variable_get('tallantoschedule_signup_custom_text', t('Please call')),
+        '#size' => 80,
+        '#maxlength' => 400,
+        '#description' => t("Custom text to show in the 'Sign up' column when 'Custom text' choice is selected for the subject."),
+        '#required' => FALSE,
+    );
     
     // Hidden settings
     $form['tallantoschedule_cache_timestamp'] = array(
@@ -246,7 +255,17 @@ function tallantoschedule_settings_subjects() {
             '#suffix' => '</th>',
         );
         $form['header3'] = array(
+            '#value' => t('Visible title'),
+            '#prefix' => '<th>',
+            '#suffix' => '</th>',
+        );
+        $form['header4'] = array(
             '#value' => t('Description URL'),
+            '#prefix' => '<th>',
+            '#suffix' => '</th>',
+        );
+        $form['header5'] = array(
+            '#value' => t('Custom sign up?'),
             '#prefix' => '<th>',
             '#suffix' => '</th></tr>',
         );
@@ -262,17 +281,31 @@ function tallantoschedule_settings_subjects() {
             $form['tallantoschedule_subject_title_' . $subject] = array(
                 '#type' => 'textfield',
                 '#value' => $title,
-                '#size' => 60,
+                '#size' => 30,
                 '#maxlength' => 400,
                 '#disabled' => TRUE,
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+            $form['tallantoschedule_subject_visibletitle_' . $subject] = array(
+                '#type' => 'textfield',
+                '#default_value' => variable_get('tallantoschedule_subject_visibletitle_' . $subject, $title),
+                '#size' => 45,
+                '#maxlength' => 400,
                 '#prefix' => '<td>',
                 '#suffix' => '</td>',
             );
             $form['tallantoschedule_subject_url_' . $subject] = array(
                 '#type' => 'textfield',
                 '#default_value' => variable_get('tallantoschedule_subject_url_' . $subject, ''),
-                '#size' => 80,
+                '#size' => 35,
                 '#maxlength' => 400,
+                '#prefix' => '<td>',
+                '#suffix' => '</td>',
+            );
+            $form['tallantoschedule_subject_custom_text_check_' . $subject] = array(
+                '#type' => 'checkbox',
+                '#default_value' => variable_get('tallantoschedule_subject_custom_text_check_' . $subject, 0),
                 '#prefix' => '<td>',
                 '#suffix' => '</td></tr>',
             );
@@ -289,6 +322,16 @@ function tallantoschedule_settings_subjects() {
             '#suffix' => '</td>',
         );
         $form['footer3'] = array(
+            '#value' => ' ',
+            '#prefix' => '<td>',
+            '#suffix' => '</td>',
+        );
+        $form['footer4'] = array(
+            '#value' => ' ',
+            '#prefix' => '<td>',
+            '#suffix' => '</td>',
+        );
+        $form['footer5'] = array(
             '#value' => ' ',
             '#prefix' => '<td>',
             '#suffix' => '</td></tr></table>',
