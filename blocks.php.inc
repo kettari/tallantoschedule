@@ -122,15 +122,15 @@ function viewTallantoScheduleBlock($delta = 0) {
                 $css_class = _tallantoschedule_translit_css_class($tallantoschedule_parsed_data['valid_subjects'][$event_item->subject_id]);
                 
                 $data[] = array(
-                    array('data' => formatEventDate($event_item), 'style' => 'font-size: 0.875em;', 'class' => $css_class),
-                    array('data' => $subject, 'style' => 'font-size: 0.875em;', 'class' => $css_class),
-                    array('data' => $teacher, 'style' => 'font-size: 0.875em;', 'class' => $css_class),
-                    array('data' => $difficulty_levels[$level], 'style' => 'font-size: 0.875em;', 'class' => $css_class),
-                    array('data' => formatSignUpUrl($event_item), 'style' => 'font-size: 0.875em;', 'class' => $css_class),
+                    array('data' => formatEventDate($event_item), 'style' => 'font-size: 0.875em;', 'class' => $css_class . ' tl-date'),
+                    array('data' => $subject, 'style' => 'font-size: 0.875em;', 'class' => $css_class . ' tl-subject'),
+                    array('data' => $teacher, 'style' => 'font-size: 0.875em;', 'class' => $css_class . ' tl-teacher'),
+                    array('data' => $difficulty_levels[$level], 'style' => 'font-size: 0.875em;', 'class' => $css_class . ' tl-difficulty'),
+                    array('data' => formatSignUpUrl($event_item), 'style' => 'font-size: 0.875em;', 'class' => $css_class . ' tl-signup'),
                 );
             }
             
-            $content .= sprintf('<h2>%s</h2>', $valid_dates[$i++]) . theme_table($header, $data, array('width' => '647px'));
+            $content .= sprintf('<h2>%s</h2>', $valid_dates[$i++]) . theme_table($header, $data, array('width' => '647px', 'class' => 'tallantoschedule_table'));
             
             // Cleanup data
             $data = array();
