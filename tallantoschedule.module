@@ -73,6 +73,7 @@ function tallantoschedule_menu() {
         'access arguments' => array('administer tallantoschedule'),
         'type' => MENU_LOCAL_TASK,
     );
+<<<<<<< HEAD
 	// Debug: print parsed data
     $items['admin/settings/tallantoschedule/debug'] = array(
         'title' => 'Debug',
@@ -82,6 +83,8 @@ function tallantoschedule_menu() {
         'access arguments' => array('administer tallantoschedule'),
         'type' => MENU_CALLBACK,
     );
+=======
+>>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
         
     return $items;
 }

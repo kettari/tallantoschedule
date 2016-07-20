@@ -125,12 +125,17 @@ function tallantoschedule_parse_xml_data($xml_data) {
 
         preg_match_all($pattern, $matches[1][0], $matches);
 
+<<<<<<< HEAD
         for ($i=0;$i<count($matches[0]);$i++) {
+=======
+        for ($i=0;$i<count($matches[0])-1;$i++) {
+>>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
             $valid_employees[$matches[1][$i]] = $matches[2][$i];
         }
     } else {
         drupal_set_message('Unable to locate employee options in the XML document.');
     }
+<<<<<<< HEAD
 	
 	global $user;
 
@@ -142,6 +147,8 @@ function tallantoschedule_parse_xml_data($xml_data) {
 		die;
 	}
 	*/
+=======
+>>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
 
     //
     // 4) Prepare branches and parent events
@@ -224,6 +231,7 @@ function tallantoschedule_parse_xml_data($xml_data) {
     uasort($valid_parent_events, '_tallantoschedule_sort_parents');
     //print_r($valid_parent_events);die;
     //print_r(_tallantoschedule_analyze_event_array($valid_events));die;
+<<<<<<< HEAD
 	
 	/*
 	global $user;
@@ -233,6 +241,8 @@ function tallantoschedule_parse_xml_data($xml_data) {
 		print_r($valid_events);die;
 	}
 	*/
+=======
+>>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
 
     // Pack all data
     $tallantoschedule_parsed_data['valid_events'] = $valid_events;
