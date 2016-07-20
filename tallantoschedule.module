@@ -3,8 +3,13 @@
 require_once(dirname(__FILE__) . '/settings.php.inc');
 require_once(dirname(__FILE__) . '/processor.php.inc');
 require_once(dirname(__FILE__) . '/class_tlevent.php.inc');
+require_once(dirname(__FILE__) . '/class_tallantosubject.php.inc');
+require_once(dirname(__FILE__) . '/class_tallantoteacher.php.inc');
+require_once(dirname(__FILE__) . '/class_tallantobranch.php.inc');
+require_once(dirname(__FILE__) . '/class_tallantolevel.php.inc');
 require_once(dirname(__FILE__) . '/formatter.php.inc');
 require_once(dirname(__FILE__) . '/blocks.php.inc');
+require_once(dirname(__FILE__) . '/api.php.inc');
 
 /**
  * Valid permissions for this module
