@@ -90,7 +90,6 @@ function listTallantoSchedule($branch) {
         }
     }
     
-<<<<<<< HEAD
 	//print_r($selected_events);die('listTallantoSchedule() before ksort()');
 	
 	// Make sure all week days are present
@@ -111,10 +110,6 @@ function listTallantoSchedule($branch) {
 	//print_r($selected_events);die('listTallantoSchedule() after ksort()');
 	
 	// Reorder days
-=======
-    // Sort events so 'today' always first
-    ksort($selected_events);
->>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
     $today = date('N');
     $before_today = array_slice($selected_events, 0, ($today - 1), TRUE);
     $today_and_further = array_slice($selected_events, ($today - 1), 7, TRUE);
@@ -158,7 +153,6 @@ function formatSignUpUrl($tallanto_event) {
         return $signup_text_closed;
     } else {                                                                            // ...and here we go
         $url = str_replace('@EVENT_ID@', $tallanto_event->id, variable_get('tallantoschedule_signup_url', '@EVENT_ID@'));
-<<<<<<< HEAD
 
 		$cookie_keys = array(
 			'beforekaula' 		=> 'Источник перехода',
@@ -194,18 +188,11 @@ function formatSignUpUrl($tallanto_event) {
 		$for_new_description = urlencode($for_new_description);
 		$url .= '&for_new_description=' . $for_new_description;
 		$result = sprintf('<a href="%s">%s</a>', $url, $signup_text_signup);
-=======
-        $result = sprintf('<a href="%s">%s</a>', $url, $signup_text_signup);
->>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
         
         // Custom sign up text? Avoid URLs
         if ($use_custom_signup_text) {
             $result = $signup_text_signup;
         }
-<<<<<<< HEAD
-=======
-        
->>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
         return $result;
     }
 }
@@ -249,8 +236,4 @@ function _tallantoschedule_translit_css_class($string) {
     );
     
     return strtr($result, $converter);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102

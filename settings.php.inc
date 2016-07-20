@@ -352,10 +352,7 @@ function tallantoschedule_settings_teachers() {
     
     // Get teachers
     $tallantoschedule_parsed_data = variable_get('tallantoschedule_parsed_data', array());
-<<<<<<< HEAD
 	//print_r($tallantoschedule_parsed_data);die;
-=======
->>>>>>> 0702a43bdf1215b55bd9dddca2ccbdf8d6157102
     
     if (isset($tallantoschedule_parsed_data['valid_employees']) && (count($tallantoschedule_parsed_data['valid_employees']) > 0)) {
     
