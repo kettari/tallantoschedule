@@ -8,80 +8,94 @@ require_once(dirname(__FILE__) . '/blocks.php.inc');
 
 /**
  * Valid permissions for this module
+ *
  * @return array An array of valid permissions for the tallantoschedule module
  */
 function tallantoschedule_perm() {
-    return array('administer tallantoschedule', 'access tallantoschedule content');
+  return array(
+    'administer tallantoschedule',
+    'access tallantoschedule content',
+  );
 } // function tallantoschedule_perm()
 
 /**
  * Menu for this module
+ *
  * @return array An array with this module's settings.
  */
 function tallantoschedule_menu() {
-    $items = array();
-    //Link to the tallantoschedule admin page:
-    $items['admin/settings/tallantoschedule'] = array(
-        'title' => 'Tallanto Schedule',
-        'description' => 'Administer Tallanto Schedule Module',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('tallantoschedule_settings'),
-        'access arguments' => array('administer tallantoschedule'),
-        'type' => MENU_NORMAL_ITEM,
-    );
-    $items['admin/settings/tallantoschedule/settings'] = array(
-        'title' => 'General',
-        'description' => 'Administer Tallanto Schedule Module',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('tallantoschedule_settings'),
-        'access arguments' => array('administer tallantoschedule'),
-        'type' => MENU_DEFAULT_LOCAL_TASK,
-    );
-    // Branches settings
-    $items['admin/settings/tallantoschedule/branches'] = array(
-        'title' => 'Branches',
-        'description' => 'Set up branches',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('tallantoschedule_settings_branches'),
-        'access arguments' => array('administer tallantoschedule'),
-        'type' => MENU_LOCAL_TASK,
-    );
-    // Subjects settings
-    $items['admin/settings/tallantoschedule/subjects'] = array(
-        'title' => 'Subjects',
-        'description' => 'Set up subjects',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('tallantoschedule_settings_subjects'),
-        'access arguments' => array('administer tallantoschedule'),
-        'type' => MENU_LOCAL_TASK,
-    );
-    // Teachers settings
-    $items['admin/settings/tallantoschedule/teachers'] = array(
-        'title' => 'Teachers',
-        'description' => 'Set up teachers',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('tallantoschedule_settings_teachers'),
-        'access arguments' => array('administer tallantoschedule'),
-        'type' => MENU_LOCAL_TASK,
-    );
-    // Difficulty settings
-    $items['admin/settings/tallantoschedule/difficuty'] = array(
-        'title' => 'Difficulty',
-        'description' => 'Set up difficulty',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('tallantoschedule_settings_difficulty'),
-        'access arguments' => array('administer tallantoschedule'),
-        'type' => MENU_LOCAL_TASK,
-    );
-	// Debug: print parsed data
-    $items['admin/settings/tallantoschedule/debug'] = array(
-        'title' => 'Debug',
-        'description' => 'Print parsed data',
-        'page callback' => 'tallantoschedule_debug',
-        'page arguments' => array(),
-        'access arguments' => array('administer tallantoschedule'),
-        'type' => MENU_CALLBACK,
-    );
-        
-    return $items;
+  $items = array();
+  //Link to the tallantoschedule admin page:
+  $items['admin/settings/tallantoschedule'] = array(
+    'title'            => 'Tallanto Schedule',
+    'description'      => 'Administer Tallanto Schedule Module',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('tallantoschedule_settings'),
+    'access arguments' => array('administer tallantoschedule'),
+    'type'             => MENU_NORMAL_ITEM,
+  );
+  $items['admin/settings/tallantoschedule/settings'] = array(
+    'title'            => 'General',
+    'description'      => 'Administer Tallanto Schedule Module',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('tallantoschedule_settings'),
+    'access arguments' => array('administer tallantoschedule'),
+    'type'             => MENU_DEFAULT_LOCAL_TASK,
+  );
+  // Branches settings
+  $items['admin/settings/tallantoschedule/branches'] = array(
+    'title'            => 'Branches',
+    'description'      => 'Set up branches',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('tallantoschedule_settings_branches'),
+    'access arguments' => array('administer tallantoschedule'),
+    'type'             => MENU_LOCAL_TASK,
+  );
+  // Subjects settings
+  $items['admin/settings/tallantoschedule/subjects'] = array(
+    'title'            => 'Subjects',
+    'description'      => 'Set up subjects',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('tallantoschedule_settings_subjects'),
+    'access arguments' => array('administer tallantoschedule'),
+    'type'             => MENU_LOCAL_TASK,
+  );
+  // Teachers settings
+  $items['admin/settings/tallantoschedule/teachers'] = array(
+    'title'            => 'Teachers',
+    'description'      => 'Set up teachers',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('tallantoschedule_settings_teachers'),
+    'access arguments' => array('administer tallantoschedule'),
+    'type'             => MENU_LOCAL_TASK,
+  );
+  // Difficulty settings
+  $items['admin/settings/tallantoschedule/difficuty'] = array(
+    'title'            => 'Difficulty',
+    'description'      => 'Set up difficulty',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('tallantoschedule_settings_difficulty'),
+    'access arguments' => array('administer tallantoschedule'),
+    'type'             => MENU_LOCAL_TASK,
+  );
+  // Debug: print parsed data
+  $items['admin/settings/tallantoschedule/debug'] = array(
+    'title'            => 'Debug',
+    'description'      => 'Print parsed data',
+    'page callback'    => 'tallantoschedule_debug',
+    'page arguments'   => array(),
+    'access arguments' => array('administer tallantoschedule'),
+    'type'             => MENU_CALLBACK,
+  );
+  // API endpoint to get ready schedule
+  $items['tallantoschedule/api/exportSchedule'] = array(
+    'title'            => 'Export schedule',
+    'description'      => 'Export schedule in machine-readable format',
+    'page callback'    => 'tallantoschedule_api_axport',
+    'page arguments'   => array(),
+    'access arguments' => array('access content'),
+    'type'             => MENU_CALLBACK,
+  );
+
+  return $items;
 }
